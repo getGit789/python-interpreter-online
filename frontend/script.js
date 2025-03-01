@@ -13,6 +13,11 @@ let output;
 let executionStatus;
 let statusMessage;
 
+// API endpoint configuration
+const API_URL = 'http://localhost:8002'; // Local development
+// For production, change to your Render backend URL, e.g.:
+// const API_URL = 'https://python-interpreter-api.onrender.com';
+
 // Code examples
 const codeExamples = {
     hello: '# Hello World Example\nprint("Hello, World!")',
@@ -258,7 +263,7 @@ async function runCode() {
     
     try {
         console.log('Sending code to backend:', code);
-        const response = await axios.post('http://localhost:8002/execute', {
+        const response = await axios.post(`${API_URL}/execute`, {
             code: code
         });
         
