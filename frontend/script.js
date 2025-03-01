@@ -14,9 +14,14 @@ let executionStatus;
 let statusMessage;
 
 // API endpoint configuration
-const API_URL = 'http://localhost:8002'; // Local development
-// For production, change to your Render backend URL, e.g.:
-// const API_URL = 'https://python-interpreter-api.onrender.com';
+// Automatically detect if we're running on GitHub Pages and use the production API
+const isProduction = window.location.hostname === 'getgit789.github.io';
+const API_URL = isProduction 
+    ? 'https://python-interpreter-api.onrender.com' 
+    : 'http://localhost:8002';
+
+console.log(`Running in ${isProduction ? 'production' : 'development'} mode`);
+console.log(`API URL: ${API_URL}`);
 
 // Code examples
 const codeExamples = {
