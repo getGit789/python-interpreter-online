@@ -50,6 +50,19 @@ button:hover {
     background-color: #2d3748;
 }
 
+select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+select:hover {
+    border-color: #4a5568;
+}
+
 #output-container {
     background-color: white;
     border: 1px solid #ccc;
@@ -68,4 +81,31 @@ button:hover {
     padding: 0.5rem;
     border-radius: 0.25rem;
     min-height: 100px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#output.error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border-left: 4px solid #d32f2f;
+}
+
+#output.success {
+    background-color: #e8f5e9;
+    color: #388e3c;
+    border-left: 4px solid #388e3c;
+}
+
+#output.running {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border-left: 4px solid #1976d2;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
 }
