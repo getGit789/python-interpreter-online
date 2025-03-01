@@ -267,7 +267,13 @@ async function runCode() {
         }
         
         output.textContent = outputText;
-        output.className = outputClass || 'success';
+        
+        // Only set a class if there's an error, otherwise clear the class
+        if (outputClass === 'error') {
+            output.className = 'error';
+        } else {
+            output.className = '';
+        }
     } catch (error) {
         console.error('Error executing code:', error);
         
