@@ -214,7 +214,7 @@ async function runCode() {
         
         // Handle the response
         let outputText = '';
-        let outputClass = '';
+        let hasError = false;
         
         // Check if there's any output
         if (response.data.output && response.data.output.trim()) {
@@ -223,10 +223,10 @@ async function runCode() {
         
         // Check if there's any error
         if (response.data.error && response.data.error.trim()) {
+            hasError = true;
             if (outputText) outputText += '\n\n';
             const friendlyError = getUserFriendlyErrorMessage(response.data.error);
             outputText += 'Error:\n' + friendlyError;
-            outputClass = 'error';
             
             // Update status to error
             executionStatus.className = 'execution-status error';
@@ -235,7 +235,7 @@ async function runCode() {
         
         // Check exit code
         if (response.data.exit_code !== 0) {
-            outputClass = 'error';
+            hasError = true;
             if (!outputText) {
                 outputText = 'Program exited with code ' + response.data.exit_code;
             }
@@ -250,7 +250,6 @@ async function runCode() {
         // If no output or error
         if (!outputText) {
             outputText = 'Program executed successfully with no output';
-            outputClass = 'success';
         }
         
         // This block is now handled in the output class setting section
@@ -258,14 +257,14 @@ async function runCode() {
         output.textContent = outputText;
         
         // Only set a class if there's an error, otherwise clear the class
-        if (outputClass === 'error') {
+        if (hasError) {
             output.className = 'error';
         } else {
             output.className = '';
         }
         
         // Clear the execution status error if we're showing success output
-        if (outputClass === 'error') {
+        if (hasError) {
             executionStatus.className = 'execution-status error';
             statusMessage.textContent = 'Error in code execution';
         } else {

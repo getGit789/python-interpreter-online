@@ -83,7 +83,7 @@ select:hover {
     min-height: 100px;
     max-height: 300px;
     overflow-y: auto;
-    border-left: 4px solid #ccc;
+    border-left: 4px solid transparent;
 }
 
 #output.error {
@@ -92,11 +92,7 @@ select:hover {
     border-left: 4px solid #d32f2f;
 }
 
-#output.success {
-    background-color: #e8f5e9;
-    color: #388e3c;
-    border-left: 4px solid #388e3c;
-}
+/* Success class removed as we now use default styling for success */
 
 .execution-status {
     display: none;
