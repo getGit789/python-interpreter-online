@@ -1,145 +1,95 @@
 # Python Interpreter Online
 
-![Python Interpreter Online](https://img.shields.io/badge/Python-Interpreter-blue?style=for-the-badge&logo=python)
+![Python Interpreter Online](https://raw.githubusercontent.com/getGit789/python-interpreter-online/main/frontend/public/screenshot.png)
 
-A modern, web-based Python interpreter that allows users to write, execute, and share Python code in a secure and scalable environment. Perfect for learning, teaching, quick code testing, or sharing code snippets with others.
+## 🚀 Live Demo
 
-**Live Demo:** [https://github.com/GetGit789/python-interpreter-online](https://github.com/GetGit789/python-interpreter-online)
+**Try it now:** [Python Interpreter Online](https://getgit789.github.io/python-interpreter-online/)
 
-![Screenshot of Python Interpreter Online](https://via.placeholder.com/800x450.png?text=Python+Interpreter+Online)
+## 📝 Description
+
+Python Interpreter Online is a web-based application that allows users to write, execute, and share Python code securely from their browser. It features a modern code editor with syntax highlighting, error handling, and the ability to share code snippets via URL.
 
 ## ✨ Features
 
-- **In-browser Code Editor** with syntax highlighting, code completion, and error detection (powered by Monaco Editor)
-- **Secure Python Code Execution** with resource limits and sandboxing
-- **Real-time Output Display** for immediate feedback
-- **Dark Theme** for reduced eye strain during extended coding sessions
-- **Code Sharing** via shareable URLs
-- **One-click Code Copying** to clipboard
-- **Pre-loaded Code Examples** to help users get started
-- **Responsive Design** that works on desktop and mobile devices
-- **Perfect Device Optimization** for coding and testing from any device - desktop, laptop, tablet, or mobile phone
-- **Rate Limiting** to prevent abuse
+- **Modern Code Editor**: Built with Monaco Editor (the same engine that powers VS Code)
+- **Syntax Highlighting**: Makes your code more readable with proper coloring
+- **Code Execution**: Run Python code directly in your browser
+- **Error Handling**: User-friendly error messages with explanations
+- **Code Sharing**: Share your code snippets with others via URL
+- **Example Code**: Pre-loaded examples to help you get started
+- **Responsive Design**: Works on desktop and mobile devices
+- **Secure Execution**: Code runs in a sandboxed environment with resource limits
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-- **Frontend:**
-  - HTML5, CSS3, and vanilla JavaScript
-  - Monaco Editor for code editing
-  - Responsive design with CSS Grid and Flexbox
-  
-- **Backend:**
-  - FastAPI for high-performance API endpoints
-  - RestrictedPython for secure code execution
-  - Resource limiting with Python's `resource` module
-  - Authentication and rate limiting
+### Frontend
+- Vanilla JavaScript
+- Monaco Editor
+- HTML/CSS
+- Axios for API requests
 
-## 🚀 Getting Started
+### Backend
+- FastAPI (Python)
+- Uvicorn ASGI server
+- RestrictedPython for sandboxed execution
+- Rate limiting and security measures
+
+## 🔧 Local Development Setup
 
 ### Prerequisites
+- Node.js (for frontend)
+- Python 3.9+ (for backend)
 
-- Python 3.8+ for the backend
-- Node.js 14+ for the frontend server
+### Backend Setup
+1. Clone the repository
+   ```bash
+   git clone https://github.com/getGit789/python-interpreter-online.git
+   cd python-interpreter-online
+   ```
 
-### Installation
-
-#### Clone the Repository
-
-```bash
-git clone https://github.com/GetGit789/python-interpreter-online.git
-cd python-interpreter-online
-```
-
-#### Backend Setup
-
-1. Navigate to the backend directory:
+2. Install backend dependencies
    ```bash
    cd backend
-   ```
-
-2. Create a virtual environment (optional but recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```bash
    pip install -r requirements.txt
    ```
 
-4. Start the backend server:
+3. Run the backend server
    ```bash
-   uvicorn app.main:app --reload --port 8002
+   uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
    ```
 
-#### Frontend Setup
-
-1. Navigate to the frontend directory:
+### Frontend Setup
+1. Navigate to the frontend directory
    ```bash
    cd frontend
    ```
 
-2. Install dependencies:
+2. Install frontend dependencies
    ```bash
    npm install
    ```
 
-3. Start the frontend server:
+3. Start the frontend server
    ```bash
-   npm start
+   node server.js
    ```
 
-4. Open your browser and navigate to:
-   ```
-   http://localhost:3002/
-   ```
+4. Open your browser and navigate to `http://localhost:3002`
 
-## 🔒 Security
+## 🌐 Deployment
 
-The Python Interpreter Online takes security seriously:
+The project is deployed using:
+- **Frontend**: GitHub Pages
+- **Backend**: Render
 
-- **Code Sandboxing**: Uses RestrictedPython to prevent malicious code execution
-- **Resource Limits**: Restricts CPU time, memory usage, and process creation
-- **Rate Limiting**: Prevents abuse by limiting requests per user
-- **Input Validation**: Sanitizes all user inputs to prevent injection attacks
-- **Module Whitelisting**: Only allows safe Python modules to be imported
+### Deploying the Frontend to GitHub Pages
 
-## 🧩 Architecture
+The frontend is automatically deployed to GitHub Pages using GitHub Actions whenever changes are pushed to the main branch.
 
-### Backend (FastAPI)
+### Deploying the Backend to Render
 
-The backend is built with FastAPI and provides the following endpoints:
-
-- `POST /execute`: Executes Python code and returns the output
-- `POST /token`: Authenticates users and provides access tokens
-- `GET /health`: Health check endpoint
-
-### Frontend
-
-The frontend is a simple, responsive web application that communicates with the backend API:
-
-- **Monaco Editor**: Provides a rich code editing experience
-- **API Client**: Uses Axios to communicate with the backend
-- **UI Components**: Custom-built components for a cohesive user experience
-
-## 🎮 Usage
-
-1. **Write Code**: Type your Python code in the editor
-2. **Run Code**: Click the "Run Code" button to execute your code
-3. **View Output**: See the results in the output panel below the editor
-4. **Share Code**: Click "Share Code" to generate a shareable URL
-5. **Copy Code**: Click "Copy Code" to copy your code to the clipboard
-6. **Clear Output**: Click "Clear Output" to clear the output panel
-7. **Load Examples**: Select an example from the dropdown to load pre-written code
-
-## 🛣️ Roadmap
-
-- [ ] Add support for multiple files and projects
-- [ ] Implement user accounts for saving code snippets
-- [ ] Add code formatting options
-- [ ] Support for additional programming languages
-- [ ] Collaborative editing features
+Follow the instructions in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) to deploy the backend to Render.
 
 ## 🤝 Contributing
 
@@ -151,71 +101,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👏 Acknowledgements
+## 📞 Contact
 
-- [Monaco Editor](https://microsoft.github.io/monaco-editor/) for the powerful code editor
-- [FastAPI](https://fastapi.tiangolo.com/) for the high-performance backend
-- [RestrictedPython](https://github.com/zopefoundation/RestrictedPython) for secure code execution
-
-## 🚀 Deployment
-
-This project is deployed using the following services:
-
-### Frontend
-The frontend is deployed on GitHub Pages and can be accessed at:
-https://getgit789.github.io/python-interpreter-online/
-
-To update the frontend deployment:
-1. Make your changes to the frontend code
-2. Push to the main branch
-3. GitHub Actions will automatically deploy the frontend to GitHub Pages
-
-### Backend
-The backend is deployed on Render and can be accessed at:
-https://python-interpreter-api.onrender.com/
-
-To update the backend deployment:
-1. Make your changes to the backend code
-2. Push to the main branch
-3. Render will automatically deploy the backend
-
-### Local Development
-To run the project locally:
-1. Start the backend: `cd backend && uvicorn app.main:app --reload --port 8002`
-2. Start the frontend: `cd frontend && python -m http.server 3002`
-3. Open http://localhost:3002 in your browser
-
-## ❤️ Support the Project
-
-If you find this project useful, please consider supporting its development and maintenance. Your contributions help ensure that Python Interpreter Online remains free, up-to-date, and continuously improved.
-
-### Donation Options
-
-- **[GitHub Sponsors](https://github.com/sponsors/GetGit789)**: Support with monthly donations and get special recognition
-- **[Ko-fi](https://ko-fi.com/getgit789)**: Buy me a coffee to fuel more coding sessions
-- **[PayPal](https://paypal.me/damirk09)**: One-time donations of any amount
-
-### Why Donate?
-
-Donations help cover:
-- Server hosting costs
-- Development time for new features
-- Maintenance and security updates
-- Documentation improvements
-
-All donations are greatly appreciated, but completely optional. This project will always remain free and open-source regardless of financial support.
-
-### Other Ways to Support
-
-- **Star the repository**: It helps others discover the project
-- **Report bugs**: Help improve the project by reporting issues
-- **Submit pull requests**: Contribute code or documentation improvements
-- **Share with others**: Tell your friends and colleagues about this project
+If you have any questions or feedback, please open an issue on GitHub or contact the maintainer directly.
 
 ---
 
-Made with ❤️ by [GetGit789](https://github.com/GetGit789)
+Made with ❤️ by [GetGit789](https://github.com/getGit789)
