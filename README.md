@@ -169,7 +169,7 @@ If you find this project useful, please consider supporting its development and 
 
 - **[GitHub Sponsors](https://github.com/sponsors/GetGit789)**: Support with monthly donations and get special recognition
 - **[Ko-fi](https://ko-fi.com/getgit789)**: Buy me a coffee to fuel more coding sessions
-- **[PayPal](https://paypal.me/getgit789)**: One-time donations of any amount
+- **[PayPal](https://paypal.me/damirk09)**: One-time donations of any amount
 
 ### Why Donate?
 
