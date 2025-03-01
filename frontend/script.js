@@ -265,14 +265,17 @@ async function runCode() {
         }
         
         // Clear the execution status error if we're showing success output
-        if (!outputClass || outputClass !== 'error') {
+        if (outputClass === 'error') {
+            executionStatus.className = 'execution-status error';
+            statusMessage.textContent = 'Error in code execution';
+        } else {
             executionStatus.className = 'execution-status success';
             statusMessage.textContent = 'Code executed successfully!';
             
             // Hide success status after 3 seconds
             setTimeout(() => {
                 if (executionStatus.classList.contains('success')) {
-                    executionStatus.className = 'execution-status';
+                    executionStatus.className = 'execution-status hidden';
                 }
             }, 3000);
         }

@@ -108,6 +108,10 @@ select:hover {
     font-weight: 500;
 }
 
+.execution-status.hidden {
+    display: none !important;
+}
+
 .execution-status.running {
     display: flex;
     background-color: #e3f2fd;
