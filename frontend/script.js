@@ -15,8 +15,17 @@ const codeExamples = {
     input: '# Input Handling Example\n\n# Method 1: Using variables to simulate input\n# Simulated user input\nuser_name = "John"  # Normally would be: input("Enter your name: ")\nuser_age = 25      # Normally would be: int(input("Enter your age: "))\n\nprint(f"Hello, {user_name}! You are {user_age} years old.")\n\n# Calculating years until retirement\nretirement_age = 65\nyears_left = retirement_age - user_age\n\nprint(f"You have {years_left} years until retirement.")\n\n# Method 2: Using actual input() function\n# Note: The backend will intercept this and provide a default value\nprint("\n--- Testing actual input() function ---")\nname = input("Enter your name: ")\nprint(f"Hello, {name}!")'  
 };
 
+// Flag to prevent multiple initializations
+let isInitialized = false;
+
 // Initialize the Monaco Editor when it's loaded
 require(['vs/editor/editor.main'], function() {
+    // Prevent multiple initializations
+    if (isInitialized) {
+        console.log('Monaco Editor already initialized, skipping');
+        return;
+    }
+    isInitialized = true;
     // Configure Python syntax highlighting
     monaco.languages.registerCompletionItemProvider('python', {
         provideCompletionItems: function(model, position) {
@@ -100,6 +109,11 @@ require(['vs/editor/editor.main'], function() {
     output = document.getElementById('output');
     executionStatus = document.getElementById('execution-status');
     statusMessage = document.getElementById('status-message');
+    
+    // Remove any existing event listeners
+    runButton.removeEventListener('click', runCode);
+    clearButton.removeEventListener('click', clearOutput);
+    exampleSelect.removeEventListener('change', loadExample);
     
     // Add event listeners
     runButton.addEventListener('click', runCode);
@@ -189,12 +203,27 @@ function getUserFriendlyErrorMessage(errorText) {
     return errorText;
 }
 
+// Debounce mechanism
+let isRunning = false;
+let lastRunTime = 0;
+const DEBOUNCE_TIME = 1000; // 1 second
+
 // Run code function
 async function runCode() {
     if (!editor) {
         console.error('Editor not initialized');
         return;
     }
+    
+    // Prevent multiple rapid executions
+    const now = Date.now();
+    if (isRunning || (now - lastRunTime < DEBOUNCE_TIME)) {
+        console.log('Execution already in progress or too soon after last execution, skipping');
+        return;
+    }
+    
+    isRunning = true;
+    lastRunTime = now;
     
     const code = editor.getValue();
     
@@ -289,6 +318,9 @@ async function runCode() {
         const errorMessage = error.response?.data?.error || error.message || 'Unknown error';
         output.textContent = 'Error connecting to server: ' + errorMessage;
         output.className = 'error';
+    } finally {
+        // Reset running flag
+        isRunning = false;
     }
 }
 
