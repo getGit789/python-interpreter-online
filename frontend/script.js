@@ -253,8 +253,19 @@ async function runCode() {
             outputClass = 'success';
         }
         
-        // If no errors, show success status
-        if (!outputClass || outputClass === 'success') {
+        // This block is now handled in the output class setting section
+        
+        output.textContent = outputText;
+        
+        // Only set a class if there's an error, otherwise clear the class
+        if (outputClass === 'error') {
+            output.className = 'error';
+        } else {
+            output.className = '';
+        }
+        
+        // Clear the execution status error if we're showing success output
+        if (!outputClass || outputClass !== 'error') {
             executionStatus.className = 'execution-status success';
             statusMessage.textContent = 'Code executed successfully!';
             
@@ -264,15 +275,6 @@ async function runCode() {
                     executionStatus.className = 'execution-status';
                 }
             }, 3000);
-        }
-        
-        output.textContent = outputText;
-        
-        // Only set a class if there's an error, otherwise clear the class
-        if (outputClass === 'error') {
-            output.className = 'error';
-        } else {
-            output.className = '';
         }
     } catch (error) {
         console.error('Error executing code:', error);
