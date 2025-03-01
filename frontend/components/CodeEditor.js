@@ -33,12 +33,18 @@ const CodeEditor = () => {
   return (
     <div className="p-4">
       <div className="mb-4">
-        {/* Using a textarea as a fallback since we don't have npm to install Monaco Editor */}
-        <textarea
-          className="w-full h-64 p-2 border border-gray-300 rounded font-mono bg-gray-900 text-white"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        ></textarea>
+        <Editor
+          height="300px"
+          defaultLanguage="python"
+          defaultValue={code}
+          onChange={(value) => setCode(value)}
+          theme="vs-dark"
+          options={{
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            fontSize: 14,
+          }}
+        />
       </div>
       
       <div className="flex justify-between mb-4">

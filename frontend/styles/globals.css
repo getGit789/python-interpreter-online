@@ -1,5 +1,6 @@
-/* Remove Tailwind directives and use basic CSS instead */
-/* We'll add Tailwind via CDN in _app.js */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html,
 body {
