@@ -1,0 +1,13 @@
+{
+  "name": "python-interpreter-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "monaco-editor": "^0.34.1",
+    "http-server": "^14.1.1"
+  }
+}

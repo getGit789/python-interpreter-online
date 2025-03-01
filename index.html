@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Interpreter Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Monaco Editor CSS -->
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/editor/editor.main.min.css">
+</head>
+<body>
+    <header>
+        <h1>Python Interpreter Online</h1>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div id="editor-container"></div>
+            <div class="button-container">
+                <button id="run-button">Run Code</button>
+                <button id="clear-button">Clear Output</button>
+                <button id="copy-button" title="Copy code to clipboard">Copy Code</button>
+                <button id="share-button" title="Generate shareable link">Share Code</button>
+                <select id="example-select">
+                    <option value="">Select Example</option>
+                    <option value="hello">Hello World</option>
+                    <option value="error">Error Handling</option>
+                    <option value="loop">Performance Test</option>
+                    <option value="input">Input Handling</option>
+                </select>
+            </div>
+            <div id="share-container" class="hidden">
+                <div class="share-content">
+                    <input type="text" id="share-url" readonly>
+                    <button id="copy-share-url">Copy URL</button>
+                    <button id="close-share">Close</button>
+                </div>
+            </div>
+            <div id="output-container">
+                <h3>Output</h3>
+                <div id="execution-status" class="execution-status hidden">
+                    <div class="spinner"></div>
+                    <span id="status-message">Running code...</span>
+                </div>
+                <pre id="output"></pre>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>Python Interpreter Online - A free, open-source project</p>
+            <div class="support-options">
+                <a href="https://github.com/sponsors/GetGit789" target="_blank" class="support-link github-sponsor">
+                    <span class="support-icon">❤️</span> Sponsor
+                </a>
+                <a href="https://ko-fi.com/getgit789" target="_blank" class="support-link kofi">
+                    <span class="support-icon">☕</span> Buy me a coffee
+                </a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Load Axios from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <!-- Load Monaco Editor from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+    <script>
+        require.config({
+            paths: {
+                'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs'
+            }
+        });
+        window.MonacoEnvironment = {
+            getWorkerUrl: function(workerId, label) {
+                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                    self.MonacoEnvironment = {
+                        baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/'
+                    };
+                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/base/worker/workerMain.js');
+                `)}`;  
+            }
+        };
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
