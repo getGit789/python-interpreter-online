@@ -245,6 +245,9 @@ async function runCode() {
         let outputText = '';
         let hasError = false;
         
+        // Reset output class immediately to ensure clean state
+        output.className = '';
+        
         // Check if there's any output
         if (response.data.output && response.data.output.trim()) {
             outputText += response.data.output;
@@ -262,8 +265,8 @@ async function runCode() {
             statusMessage.textContent = 'Error in code execution';
         }
         
-        // Check exit code
-        if (response.data.exit_code !== 0) {
+        // Check exit code (if provided)
+        if (response.data.exit_code !== undefined && response.data.exit_code !== 0) {
             hasError = true;
             if (!outputText) {
                 outputText = 'Program exited with code ' + response.data.exit_code;
@@ -285,6 +288,8 @@ async function runCode() {
         
         output.textContent = outputText;
         
+        console.log('Has error:', hasError, 'Output text:', outputText);
+        
         // Only set a class if there's an error, otherwise clear the class
         if (hasError) {
             output.className = 'error';
@@ -296,6 +301,13 @@ async function runCode() {
         if (hasError) {
             executionStatus.className = 'execution-status error';
             statusMessage.textContent = 'Error in code execution';
+            
+            // Hide error status after 3 seconds
+            setTimeout(() => {
+                if (executionStatus.classList.contains('error')) {
+                    executionStatus.className = 'execution-status hidden';
+                }
+            }, 3000);
         } else {
             executionStatus.className = 'execution-status success';
             statusMessage.textContent = 'Code executed successfully!';
@@ -318,6 +330,13 @@ async function runCode() {
         const errorMessage = error.response?.data?.error || error.message || 'Unknown error';
         output.textContent = 'Error connecting to server: ' + errorMessage;
         output.className = 'error';
+        
+        // Hide error status after 3 seconds
+        setTimeout(() => {
+            if (executionStatus.classList.contains('error')) {
+                executionStatus.className = 'execution-status hidden';
+            }
+        }, 3000);
     } finally {
         // Reset running flag
         isRunning = false;
@@ -328,6 +347,12 @@ async function runCode() {
 function clearOutput() {
     if (output) {
         output.textContent = '';
+        output.className = '';
+    }
+    
+    // Hide execution status
+    if (executionStatus) {
+        executionStatus.className = 'execution-status hidden';
     }
 }
 
