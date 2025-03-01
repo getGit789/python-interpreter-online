@@ -18,6 +18,7 @@ A modern, web-based Python interpreter that allows users to write, execute, and 
 - **One-click Code Copying** to clipboard
 - **Pre-loaded Code Examples** to help users get started
 - **Responsive Design** that works on desktop and mobile devices
+- **Perfect Device Optimization** for coding and testing from any device - desktop, laptop, tablet, or mobile phone
 - **Rate Limiting** to prevent abuse
 
 ## 🛠️ Tech Stack
