@@ -161,6 +161,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [FastAPI](https://fastapi.tiangolo.com/) for the high-performance backend
 - [RestrictedPython](https://github.com/zopefoundation/RestrictedPython) for secure code execution
 
+## 🚀 Deployment
+
+This project is deployed using the following services:
+
+### Frontend
+The frontend is deployed on GitHub Pages and can be accessed at:
+https://getgit789.github.io/python-interpreter-online/
+
+To update the frontend deployment:
+1. Make your changes to the frontend code
+2. Push to the main branch
+3. GitHub Actions will automatically deploy the frontend to GitHub Pages
+
+### Backend
+The backend is deployed on Render and can be accessed at:
+https://python-interpreter-api.onrender.com/
+
+To update the backend deployment:
+1. Make your changes to the backend code
+2. Push to the main branch
+3. Render will automatically deploy the backend
+
+### Local Development
+To run the project locally:
+1. Start the backend: `cd backend && uvicorn app.main:app --reload --port 8002`
+2. Start the frontend: `cd frontend && python -m http.server 3002`
+3. Open http://localhost:3002 in your browser
+
 ## ❤️ Support the Project
 
 If you find this project useful, please consider supporting its development and maintenance. Your contributions help ensure that Python Interpreter Online remains free, up-to-date, and continuously improved.
