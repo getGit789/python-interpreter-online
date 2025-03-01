@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "http-server -p 3001"
+    "start": "node server.js"
   },
   "dependencies": {
     "axios": "^0.27.2",

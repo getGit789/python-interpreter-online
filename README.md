@@ -23,4 +23,6 @@ A web-based Python interpreter that allows users to write, execute, and share Py
 1. Navigate to the frontend directory: `cd frontend`
 2. Install dependencies: `npm install`
 3. Start the server: `npm start`
-4. Open your browser and navigate to: `http://127.0.0.1:3001/index.html`
+4. Open your browser and navigate to: `http://localhost:3002/`
+
+The frontend uses a simple custom Node.js server to serve the application with Monaco Editor for code editing.
