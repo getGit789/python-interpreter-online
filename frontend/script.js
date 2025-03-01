@@ -2,6 +2,12 @@
 let editor;
 let runButton;
 let clearButton;
+let copyButton;
+let shareButton;
+let shareContainer;
+let shareUrlInput;
+let copyShareUrlButton;
+let closeShareButton;
 let exampleSelect;
 let output;
 let executionStatus;
@@ -105,6 +111,12 @@ require(['vs/editor/editor.main'], function() {
     // Get DOM elements
     runButton = document.getElementById('run-button');
     clearButton = document.getElementById('clear-button');
+    copyButton = document.getElementById('copy-button');
+    shareButton = document.getElementById('share-button');
+    shareContainer = document.getElementById('share-container');
+    shareUrlInput = document.getElementById('share-url');
+    copyShareUrlButton = document.getElementById('copy-share-url');
+    closeShareButton = document.getElementById('close-share');
     exampleSelect = document.getElementById('example-select');
     output = document.getElementById('output');
     executionStatus = document.getElementById('execution-status');
@@ -113,12 +125,23 @@ require(['vs/editor/editor.main'], function() {
     // Remove any existing event listeners
     runButton.removeEventListener('click', runCode);
     clearButton.removeEventListener('click', clearOutput);
+    copyButton.removeEventListener('click', copyCode);
+    shareButton.removeEventListener('click', shareCode);
+    copyShareUrlButton.removeEventListener('click', copyShareUrl);
+    closeShareButton.removeEventListener('click', closeShareModal);
     exampleSelect.removeEventListener('change', loadExample);
     
     // Add event listeners
     runButton.addEventListener('click', runCode);
     clearButton.addEventListener('click', clearOutput);
+    copyButton.addEventListener('click', copyCode);
+    shareButton.addEventListener('click', shareCode);
+    copyShareUrlButton.addEventListener('click', copyShareUrl);
+    closeShareButton.addEventListener('click', closeShareModal);
     exampleSelect.addEventListener('change', loadExample);
+    
+    // Check if there's code in the URL to load
+    loadCodeFromUrl();
     
     // Log success message
     console.log('Monaco Editor initialized successfully');
@@ -345,14 +368,155 @@ async function runCode() {
 
 // Clear output function
 function clearOutput() {
-    if (output) {
-        output.textContent = '';
-        output.className = '';
-    }
+    output.textContent = '';
+    output.classList.remove('error');
+}
+
+// Copy code function
+function copyCode() {
+    const code = editor.getValue();
     
-    // Hide execution status
-    if (executionStatus) {
-        executionStatus.className = 'execution-status hidden';
+    // Use the Clipboard API if available
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                // Show temporary success message
+                const originalText = copyButton.textContent;
+                copyButton.textContent = 'Copied!';
+                copyButton.style.backgroundColor = '#388e3c';
+                
+                // Revert button text after 2 seconds
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                    copyButton.style.backgroundColor = '';
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy code. Please try selecting and copying manually.');
+            });
+    } else {
+        // Fallback for browsers that don't support clipboard API
+        try {
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            if (successful) {
+                // Show temporary success message
+                const originalText = copyButton.textContent;
+                copyButton.textContent = 'Copied!';
+                copyButton.style.backgroundColor = '#388e3c';
+                
+                // Revert button text after 2 seconds
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                    copyButton.style.backgroundColor = '';
+                }, 2000);
+            } else {
+                alert('Failed to copy code. Please try selecting and copying manually.');
+            }
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy code. Please try selecting and copying manually.');
+        }
+    }
+}
+
+// Function to generate a shareable URL
+function shareCode() {
+    const code = editor.getValue();
+    
+    // Encode the code to be URL-safe
+    const encodedCode = encodeURIComponent(code);
+    
+    // Generate the shareable URL
+    const shareableUrl = `${window.location.origin}${window.location.pathname}?code=${encodedCode}`;
+    
+    // Display the shareable URL
+    shareUrlInput.value = shareableUrl;
+    shareContainer.classList.remove('hidden');
+    
+    // Select the URL for easy copying
+    shareUrlInput.select();
+}
+
+// Function to copy the share URL
+function copyShareUrl() {
+    shareUrlInput.select();
+    
+    // Use the Clipboard API if available
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrlInput.value)
+            .then(() => {
+                // Show temporary success message
+                const originalText = copyShareUrlButton.textContent;
+                copyShareUrlButton.textContent = 'Copied!';
+                copyShareUrlButton.style.backgroundColor = '#388e3c';
+                
+                // Revert button text after 2 seconds
+                setTimeout(() => {
+                    copyShareUrlButton.textContent = originalText;
+                    copyShareUrlButton.style.backgroundColor = '';
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy URL: ', err);
+                alert('Failed to copy URL. Please try selecting and copying manually.');
+            });
+    } else {
+        // Fallback for browsers that don't support clipboard API
+        try {
+            const successful = document.execCommand('copy');
+            
+            if (successful) {
+                // Show temporary success message
+                const originalText = copyShareUrlButton.textContent;
+                copyShareUrlButton.textContent = 'Copied!';
+                copyShareUrlButton.style.backgroundColor = '#388e3c';
+                
+                // Revert button text after 2 seconds
+                setTimeout(() => {
+                    copyShareUrlButton.textContent = originalText;
+                    copyShareUrlButton.style.backgroundColor = '';
+                }, 2000);
+            } else {
+                alert('Failed to copy URL. Please try selecting and copying manually.');
+            }
+        } catch (err) {
+            console.error('Failed to copy URL: ', err);
+            alert('Failed to copy URL. Please try selecting and copying manually.');
+        }
+    }
+}
+
+// Function to close the share modal
+function closeShareModal() {
+    shareContainer.classList.add('hidden');
+}
+
+// Function to load code from URL
+function loadCodeFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeParam = urlParams.get('code');
+    
+    if (codeParam) {
+        try {
+            const decodedCode = decodeURIComponent(codeParam);
+            editor.setValue(decodedCode);
+            console.log('Code loaded from URL');
+        } catch (error) {
+            console.error('Error loading code from URL:', error);
+        }
     }
 }
 

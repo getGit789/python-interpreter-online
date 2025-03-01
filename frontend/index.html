@@ -19,6 +19,8 @@
             <div class="button-container">
                 <button id="run-button">Run Code</button>
                 <button id="clear-button">Clear Output</button>
+                <button id="copy-button" title="Copy code to clipboard">Copy Code</button>
+                <button id="share-button" title="Generate shareable link">Share Code</button>
                 <select id="example-select">
                     <option value="">Select Example</option>
                     <option value="hello">Hello World</option>
@@ -26,6 +28,13 @@
                     <option value="loop">Performance Test</option>
                     <option value="input">Input Handling</option>
                 </select>
+            </div>
+            <div id="share-container" class="hidden">
+                <div class="share-content">
+                    <input type="text" id="share-url" readonly>
+                    <button id="copy-share-url">Copy URL</button>
+                    <button id="close-share">Close</button>
+                </div>
             </div>
             <div id="output-container">
                 <h3>Output</h3>
