@@ -14,7 +14,7 @@ const CodeEditor = () => {
     setError("");
     
     try {
-      const response = await axios.post("http://localhost:8000/execute", {
+      const response = await axios.post("http://localhost:8002/execute", {
         code,
       });
       
