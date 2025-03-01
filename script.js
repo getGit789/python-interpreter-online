@@ -17,7 +17,7 @@ let statusMessage;
 // Automatically detect if we're running on GitHub Pages and use the production API
 const isProduction = window.location.hostname === 'getgit789.github.io';
 const API_URL = isProduction 
-    ? 'https://python-interpreter-api.onrender.com' 
+    ? 'https://python-interpreter-online.onrender.com' 
     : 'http://localhost:8002';
 
 console.log(`Running in ${isProduction ? 'production' : 'development'} mode`);
