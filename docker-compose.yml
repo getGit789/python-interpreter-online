@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: python-interpreter-backend
+    restart: always
+    ports:
+      - "8002:8000"
+    environment:
+      - MAX_WORKERS=4
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Network isolation
+    networks:
+      - internal
+    # Disable network access for code execution
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    # Read-only filesystem
+    read_only: true
+    # Temporary storage for Python execution
+    tmpfs:
+      - /tmp:exec,size=100M
+
+  frontend:
+    build: ./frontend
+    container_name: python-interpreter-frontend
+    restart: always
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
+    environment:
+      - API_URL=http://backend:8000
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 300M
+    networks:
+      - internal
+      - external
+
+networks:
+  internal:
+    internal: true  # No external connectivity
+  external:
+    driver: bridge
