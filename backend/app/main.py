@@ -7,13 +7,14 @@ import contextlib
 
 app = FastAPI()
 
-# Configure CORS
+# Configure CORS with more permissive settings for debugging
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://getgit789.github.io"],
+    allow_origins=["https://getgit789.github.io", "http://localhost:3002", "http://localhost:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 class CodeRequest(BaseModel):
