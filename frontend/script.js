@@ -17,7 +17,7 @@ let statusMessage;
 // Automatically detect if we're running on GitHub Pages and use the production API
 const isProduction = window.location.hostname === 'getgit789.github.io';
 const API_URL = isProduction 
-    ? 'https://python-interpreter.us-east-1.elasticbeanstalk.com'  // Your new EB URL
+    ? 'https://python-interpreter-v3.us-east-1.elasticbeanstalk.com'  // New EB URL
     : 'http://localhost:8002';
 
 console.log(`Running in ${isProduction ? 'production' : 'development'} mode`);
