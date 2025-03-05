@@ -1,0 +1,24 @@
+[Unit]
+Description=Python Interpreter Backend
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/python-interpreter
+Environment="PATH=/home/ubuntu/python-interpreter/venv/bin"
+ExecStart=/home/ubuntu/python-interpreter/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8002 --workers 4
+
+# Security limits
+LimitCPU=2
+LimitAS=100M
+TimeoutSec=3
+
+# Additional security measures
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+PrivateDevices=yes
+
+[Install]
+WantedBy=multi-user.target 
