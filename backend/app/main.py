@@ -7,18 +7,25 @@ import contextlib
 
 app = FastAPI()
 
-# Configure CORS with more permissive settings for debugging
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://getgit789.github.io", "http://localhost:3002", "http://localhost:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
 class CodeRequest(BaseModel):
     code: str
+
+@app.get("/")
+async def read_root():
+    return {"message": "API is running"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 @app.post("/execute")
 async def execute_code(request: CodeRequest):
@@ -30,7 +37,3 @@ async def execute_code(request: CodeRequest):
         return {"output": output.getvalue()}
     except Exception as e:
         return {"error": str(e)}
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
