@@ -19,6 +19,103 @@ let statusMessage;
 // API endpoint configuration
 const API_URL = 'https://fastapi-prod.eba-f2mg8dmn.us-east-1.elasticbeanstalk.com'; // AWS Elastic Beanstalk URL
 
+// Configure default fetch options with proper CORS settings
+const fetchOptions = {
+    mode: 'cors',
+    credentials: 'omit',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': 'https://getgit789.github.io'
+    }
+};
+
+// Function to check API health
+async function checkApiHealth() {
+    try {
+        const response = await fetch(`${API_URL}/health`, fetchOptions);
+        if (!response.ok) {
+            throw new Error(`Health check failed: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('API Health Status:', data);
+        return data.status === 'healthy';
+    } catch (error) {
+        console.error('Health check error:', error);
+        return false;
+    }
+}
+
+// Run code function with improved error handling
+async function runCode() {
+    const now = Date.now();
+    if (isRunning || (now - lastRunTime < DEBOUNCE_TIME)) {
+        console.log('Debouncing code execution');
+        return;
+    }
+
+    isRunning = true;
+    lastRunTime = now;
+    
+    try {
+        // Update status
+        executionStatus.style.display = 'block';
+        statusMessage.textContent = 'Running...';
+        statusMessage.style.color = '#ffd700';
+        
+        const code = editor.getValue();
+        console.log('Sending request to:', API_URL);
+        
+        // First check API health
+        const isHealthy = await checkApiHealth();
+        if (!isHealthy) {
+            throw new Error('API is not available. Please try again later.');
+        }
+
+        // Execute code
+        const response = await fetch(`${API_URL}/execute`, {
+            ...fetchOptions,
+            method: 'POST',
+            body: JSON.stringify({ code: code })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Received response:', data);
+        
+        if (data.error) {
+            output.textContent = `Error: ${data.error}`;
+            output.style.color = '#ff6b6b';
+            statusMessage.textContent = 'Error';
+            statusMessage.style.color = '#ff6b6b';
+            console.error('Execution error:', data.error);
+            if (data.traceback) {
+                console.error('Traceback:', data.traceback);
+            }
+        } else {
+            output.textContent = data.output || 'No output';
+            output.style.color = '#98c379';
+            statusMessage.textContent = 'Success';
+            statusMessage.style.color = '#98c379';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        output.textContent = `Error: ${error.message}`;
+        output.style.color = '#ff6b6b';
+        statusMessage.textContent = 'Error';
+        statusMessage.style.color = '#ff6b6b';
+    } finally {
+        isRunning = false;
+        setTimeout(() => {
+            executionStatus.style.display = 'none';
+        }, 2000);
+    }
+}
+
 // Code examples
 const codeExamples = {
     hello: '# Hello World Example\nprint("Hello, World!")',
