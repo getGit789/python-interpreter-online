@@ -1,1 +1,1 @@
-web: gunicorn application:application --bind 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker
+web: gunicorn application:application --bind 0.0.0.0:80 -k uvicorn.workers.UvicornWorker

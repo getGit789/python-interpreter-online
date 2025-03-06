@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.main import app
 
-application = app
+# Create FastAPI application
+application = FastAPI()
 
 # Add CORS middleware
 application.add_middleware(
@@ -12,6 +13,14 @@ application.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+# Include the main app's router
+application.include_router(app.router)
+
+# Health check endpoint
+@application.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn
