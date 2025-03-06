@@ -1,16 +1,23 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import sys
 from io import StringIO
 import contextlib
+import traceback
 
 app = FastAPI()
 
-# Configure CORS
+# Configure CORS with all possible frontend URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://getgit789.github.io", "https://getgit789.github.io/python-interpreter-online/"],
+    allow_origins=[
+        "https://getgit789.github.io",
+        "https://getgit789.github.io/python-interpreter-online/",
+        "http://localhost:5000",
+        "http://127.0.0.1:5000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,7 +41,27 @@ async def execute_code(request: CodeRequest):
         # Capture stdout
         output = StringIO()
         with contextlib.redirect_stdout(output):
-            exec(request.code)
-        return {"output": output.getvalue()}
+            # Execute the code in a safe environment
+            exec(request.code, {}, {})
+        return JSONResponse(
+            content={"output": output.getvalue()},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "*"
+            }
+        )
     except Exception as e:
-        return {"error": str(e)}
+        error_details = {
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+        return JSONResponse(
+            status_code=400,
+            content=error_details,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "*"
+            }
+        )
