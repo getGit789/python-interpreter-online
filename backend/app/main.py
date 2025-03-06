@@ -24,6 +24,9 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
+# Global namespace for code execution
+GLOBAL_NAMESPACE = {}
+
 class CodeRequest(BaseModel):
     code: str
 
@@ -38,11 +41,26 @@ async def health_check():
 @app.post("/execute")
 async def execute_code(request: CodeRequest):
     try:
+        # First try to compile the code to catch syntax errors
+        try:
+            compiled_code = compile(request.code, '<string>', 'exec')
+        except SyntaxError as e:
+            return JSONResponse(
+                status_code=400,
+                content={"error": str(e)},
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*"
+                }
+            )
+
         # Capture stdout
         output = StringIO()
         with contextlib.redirect_stdout(output):
-            # Execute the code in a safe environment
-            exec(request.code, {}, {})
+            # Execute the code in the global namespace
+            exec(compiled_code, GLOBAL_NAMESPACE)
+            
         return JSONResponse(
             content={"output": output.getvalue()},
             headers={
@@ -54,7 +72,7 @@ async def execute_code(request: CodeRequest):
     except Exception as e:
         error_details = {
             "error": str(e),
-            "traceback": traceback.format_exc()
+            "type": e.__class__.__name__
         }
         return JSONResponse(
             status_code=400,
