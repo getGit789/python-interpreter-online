@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.main import app
 
-# Update the application instance name to match the EB configuration
 application = app
 
 # Add CORS middleware
