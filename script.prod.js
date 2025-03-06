@@ -17,7 +17,7 @@ let executionStatus;
 let statusMessage;
 
 // API endpoint configuration
-const API_URL = 'https://fastapi-prod.eba-f2mg8dmn.us-east-1.elasticbeanstalk.com'; // AWS Elastic Beanstalk URL
+const API_URL = 'https://web-production-fdd9.up.railway.app'; // Railway URL
 
 // Configure default fetch options with proper CORS settings
 const fetchOptions = {
