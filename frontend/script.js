@@ -14,13 +14,8 @@ let executionStatus;
 let statusMessage;
 
 // API endpoint configuration
-// Automatically detect if we're running on GitHub Pages and use the production API
-const isProduction = window.location.hostname === 'getgit789.github.io';
-const API_URL = isProduction 
-    ? 'https://python-env-1.eba-sm7mncgq.us-east-1.elasticbeanstalk.com'  // Changed to HTTPS
-    : 'http://localhost:8002';
+const API_URL = 'https://fastapi-prod.eba-f2mg8dmn.us-east-1.elasticbeanstalk.com'; // AWS Elastic Beanstalk URL
 
-console.log(`Running in ${isProduction ? 'production' : 'development'} mode`);
 console.log(`API URL: ${API_URL}`);
 
 // Code examples

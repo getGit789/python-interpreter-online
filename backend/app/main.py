@@ -10,7 +10,7 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://getgit789.github.io"],
+    allow_origins=["https://getgit789.github.io", "https://getgit789.github.io/python-interpreter-online/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
