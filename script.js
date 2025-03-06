@@ -160,77 +160,6 @@ function loadExample() {
     }
 }
 
-// Common Python errors and their user-friendly messages
-const errorMessages = {
-    'SyntaxError': {
-        'EOL while scanning string literal': 'You have an unclosed string. Make sure all quotes are properly closed.',
-        'unexpected EOF while parsing': 'Your code is incomplete. Check for missing closing brackets or parentheses.',
-        'invalid syntax': 'There\'s a syntax error in your code. Check for typos or missing colons after statements like if, for, while, etc.',
-        'invalid token': 'There\'s an invalid character in your code. Check for special characters that aren\'t allowed in Python.'
-    },
-    'IndentationError': {
-        'expected an indented block': 'You need to indent the code block after a colon (:).',
-        'unexpected indent': 'You have an unexpected indentation. Make sure your indentation is consistent.'
-    },
-    'NameError': {
-        'name': 'You\'re using a variable that hasn\'t been defined. Check for typos or make sure to define the variable before using it.'
-    },
-    'TypeError': {
-        'unsupported operand': 'You\'re trying to perform an operation on incompatible types. Check the data types of your variables.',
-        'can\'t multiply sequence by non-int': 'You can only multiply sequences (like strings or lists) by integers.',
-        'object is not subscriptable': 'You\'re trying to use indexing [] on an object that doesn\'t support it.'
-    },
-    'ZeroDivisionError': {
-        'division by zero': 'You\'re trying to divide by zero, which is not allowed in mathematics.'
-    },
-    'IndexError': {
-        'list index out of range': 'You\'re trying to access an index that doesn\'t exist in your list. Remember, indexing starts at 0.'
-    },
-    'KeyError': {
-        '': 'You\'re trying to access a key that doesn\'t exist in your dictionary.'
-    },
-    'ImportError': {
-        'No module named': 'You\'re trying to import a module that doesn\'t exist or isn\'t installed.'
-    },
-    'ValueError': {
-        'invalid literal for int()': 'You\'re trying to convert a string to an integer, but the string doesn\'t represent a valid number.'
-    },
-    'FileNotFoundError': {
-        'No such file or directory': 'The file you\'re trying to open doesn\'t exist or the path is incorrect.'
-    },
-    'TimeoutError': {
-        '': 'Your code took too long to execute. Check for infinite loops or inefficient algorithms.'
-    }
-};
-
-// Function to get a user-friendly error message
-function getUserFriendlyErrorMessage(errorText) {
-    // Extract error type and details
-    const errorMatch = errorText.match(/([A-Za-z]+Error):(.*?)(?:\n|$)/);
-    if (!errorMatch) return errorText;
-    
-    const errorType = errorMatch[1];
-    const errorDetail = errorMatch[2].trim();
-    
-    // Check if we have a friendly message for this error type
-    if (errorMessages[errorType]) {
-        // Look for specific error details
-        for (const [pattern, message] of Object.entries(errorMessages[errorType])) {
-            if (pattern && errorDetail.includes(pattern)) {
-                return `${errorType}: ${message}\n\nOriginal error: ${errorDetail}`;
-            }
-        }
-        
-        // If no specific detail matched but we have a general message for the error type
-        if (errorMessages[errorType]['']) {
-            return `${errorType}: ${errorMessages[errorType]['']}`;
-        }
-    }
-    
-    // Return the original error if no friendly message is found
-    return errorText;
-}
-
 // Debounce mechanism
 let isRunning = false;
 let lastRunTime = 0;
@@ -243,7 +172,6 @@ async function runCode() {
         return;
     }
     
-    // Prevent multiple rapid executions
     const now = Date.now();
     if (isRunning || (now - lastRunTime < DEBOUNCE_TIME)) {
         console.log('Execution already in progress or too soon after last execution, skipping');
@@ -256,125 +184,54 @@ async function runCode() {
     const code = editor.getValue();
     
     // Show running status
-    executionStatus.className = 'execution-status running';
-    statusMessage.textContent = 'Running code...';
-    output.textContent = '';
-    output.className = '';
+    executionStatus.style.display = 'block';
+    statusMessage.textContent = 'Running...';
+    statusMessage.style.color = '#ffd700';
     
     try {
         console.log('Sending code to backend:', code);
-        const response = await axios.post(`${API_URL}/execute`, {
-            code: code
+        const response = await fetch(`${API_URL}/execute`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Origin': 'https://getgit789.github.io'
+            },
+            body: JSON.stringify({ code: code })
         });
         
-        console.log('Response received:', response.data);
+        const data = await response.json();
+        console.log('Response received:', data);
         
-        // Handle the response
-        let outputText = '';
-        let hasError = false;
-        
-        // Reset output class immediately to ensure clean state
-        output.className = '';
-        
-        // Check if there's any output
-        if (response.data.output && response.data.output.trim()) {
-            outputText += response.data.output;
-        }
-        
-        // Check if there's any error
-        if (response.data.error && response.data.error.trim()) {
-            hasError = true;
-            if (outputText) outputText += '\n\n';
-            const friendlyError = getUserFriendlyErrorMessage(response.data.error);
-            outputText += 'Error:\n' + friendlyError;
-            
-            // Update status to error
-            executionStatus.className = 'execution-status error';
-            statusMessage.textContent = 'Error in code execution';
-        }
-        
-        // Check exit code (if provided)
-        if (response.data.exit_code !== undefined && response.data.exit_code !== 0) {
-            hasError = true;
-            if (!outputText) {
-                outputText = 'Program exited with code ' + response.data.exit_code;
-            }
-            
-            // Update status to error if not already set
-            if (!executionStatus.classList.contains('error')) {
-                executionStatus.className = 'execution-status error';
-                statusMessage.textContent = 'Error in code execution';
-            }
-        }
-        
-        // If no output or error
-        if (!outputText) {
-            outputText = 'Program executed successfully with no output';
-        }
-        
-        // This block is now handled in the output class setting section
-        
-        output.textContent = outputText;
-        
-        console.log('Has error:', hasError, 'Output text:', outputText);
-        
-        // Only set a class if there's an error, otherwise clear the class
-        if (hasError) {
-            output.className = 'error';
+        if (data.error) {
+            output.textContent = data.error;
+            output.style.color = '#ff6b6b';
+            statusMessage.textContent = 'Error';
+            statusMessage.style.color = '#ff6b6b';
         } else {
-            output.className = '';
-        }
-        
-        // Clear the execution status error if we're showing success output
-        if (hasError) {
-            executionStatus.className = 'execution-status error';
-            statusMessage.textContent = 'Error in code execution';
-            
-            // Hide error status after 3 seconds
-            setTimeout(() => {
-                if (executionStatus.classList.contains('error')) {
-                    executionStatus.className = 'execution-status hidden';
-                }
-            }, 3000);
-        } else {
-            executionStatus.className = 'execution-status success';
-            statusMessage.textContent = 'Code executed successfully!';
-            
-            // Hide success status after 3 seconds
-            setTimeout(() => {
-                if (executionStatus.classList.contains('success')) {
-                    executionStatus.className = 'execution-status hidden';
-                }
-            }, 3000);
+            output.textContent = data.output || 'No output';
+            output.style.color = '#98c379';
+            statusMessage.textContent = 'Success';
+            statusMessage.style.color = '#98c379';
         }
     } catch (error) {
-        console.error('Error executing code:', error);
-        
-        // Update status to error
-        executionStatus.className = 'execution-status error';
-        statusMessage.textContent = 'Error connecting to server';
-        
-        // Display error
-        const errorMessage = error.response?.data?.error || error.message || 'Unknown error';
-        output.textContent = 'Error connecting to server: ' + errorMessage;
-        output.className = 'error';
-        
-        // Hide error status after 3 seconds
-        setTimeout(() => {
-            if (executionStatus.classList.contains('error')) {
-                executionStatus.className = 'execution-status hidden';
-            }
-        }, 3000);
+        console.error('Error:', error);
+        output.textContent = error.message || 'Unknown error';
+        output.style.color = '#ff6b6b';
+        statusMessage.textContent = 'Error';
+        statusMessage.style.color = '#ff6b6b';
     } finally {
-        // Reset running flag
         isRunning = false;
+        setTimeout(() => {
+            executionStatus.style.display = 'none';
+        }, 2000);
     }
 }
 
 // Clear output function
 function clearOutput() {
     output.textContent = '';
-    output.classList.remove('error');
+    output.style.color = '';
 }
 
 // Copy code function
