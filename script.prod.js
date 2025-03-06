@@ -17,7 +17,7 @@ let executionStatus;
 let statusMessage;
 
 // API endpoint configuration
-const API_URL = 'https://python-interpreter-api.onrender.com'; // Production Render backend URL
+const API_URL = 'https://fastapi-prod.eba-f2mg8dmn.us-east-1.elasticbeanstalk.com'; // AWS Elastic Beanstalk URL
 
 // Code examples
 const codeExamples = {
