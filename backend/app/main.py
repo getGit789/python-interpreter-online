@@ -6,6 +6,7 @@ import sys
 from io import StringIO
 import contextlib
 import traceback
+import builtins
 
 app = FastAPI()
 
@@ -26,6 +27,16 @@ app.add_middleware(
 
 # Global namespace for code execution
 GLOBAL_NAMESPACE = {}
+
+# Mock input function that returns predefined values
+class MockInput:
+    def __init__(self):
+        self.default_response = "default_input"
+        
+    def __call__(self, prompt=""):
+        print(prompt, end="")  # Print the prompt
+        print(self.default_response)  # Print the simulated input
+        return self.default_response
 
 class CodeRequest(BaseModel):
     code: str
@@ -55,11 +66,21 @@ async def execute_code(request: CodeRequest):
                 }
             )
 
+        # Create a mock input function
+        mock_input = MockInput()
+        
+        # Set up the execution environment with the mock input
+        exec_globals = GLOBAL_NAMESPACE.copy()
+        exec_globals['input'] = mock_input
+        
         # Capture stdout
         output = StringIO()
         with contextlib.redirect_stdout(output):
             # Execute the code in the global namespace
-            exec(compiled_code, GLOBAL_NAMESPACE)
+            exec(compiled_code, exec_globals)
+            
+        # Update the global namespace with any new definitions
+        GLOBAL_NAMESPACE.update(exec_globals)
             
         return JSONResponse(
             content={"output": output.getvalue()},
